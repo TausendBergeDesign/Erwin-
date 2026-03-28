@@ -1,0 +1,194 @@
+import { useState, useEffect } from 'react';
+import { Wine, MapPin, Calendar, ListTodo, Bed, Cloud, Sun, CloudRain, Thermometer } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+export default function Home() {
+  const [weather, setWeather] = useState<{
+    current: { temp: number, code: number },
+    daily: { date: string, max: number, min: number, code: number }[]
+  } | null>(null);
+
+  useEffect(() => {
+    // Fetch weather for Mayschoß (approx 50.52, 7.02)
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=50.52&longitude=7.02&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=3')
+      .then(res => res.json())
+      .then(data => {
+        const daily = data.daily.time.map((date: string, i: number) => ({
+          date,
+          max: data.daily.temperature_2m_max[i],
+          min: data.daily.temperature_2m_min[i],
+          code: data.daily.weather_code[i]
+        }));
+        setWeather({
+          current: {
+            temp: data.current.temperature_2m,
+            code: data.current.weather_code
+          },
+          daily
+        });
+      })
+      .catch(err => console.error("Weather fetch error:", err));
+  }, []);
+
+  const getWeatherIcon = (code: number, size = "w-6 h-6") => {
+    if (code === 0 || code === 1) return <Sun className={`${size} text-amber-500`} />;
+    if (code >= 51 && code <= 67) return <CloudRain className={`${size} text-blue-500`} />;
+    return <Cloud className={`${size} text-stone-400`} />;
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('de-DE', { weekday: 'short' });
+  };
+
+  return (
+    <div className="animate-in fade-in duration-500">
+      {/* Hero Section */}
+      <header className="relative h-[60vh] min-h-[400px] flex items-center justify-center overflow-hidden md:rounded-bl-3xl">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://www.ahrtal.com/fileadmin/_processed_/1/3/csm_Ahrtal_Sommer-2022-107-Walporzheim-Walporzheim_0634330b1a.jpg" 
+            alt="Ahrtal Sommer 2022 Walporzheim" 
+            className="w-full h-full object-cover opacity-80"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-[#f5f5f0]/95"></div>
+        </div>
+        
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto mt-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-medium tracking-widest uppercase mb-6">
+            <Wine className="w-4 h-4" />
+            <span>Familien-Event 2026</span>
+          </div>
+          <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border border-white/30 mb-6 mx-auto overflow-hidden shadow-xl">
+            <img 
+              src="https://i.imgur.com/dVG8bfj.png" 
+              alt="Erwin Tour Logo" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          <h1 className="text-5xl md:text-7xl font-serif text-white mb-4 drop-shadow-lg">
+            Erwin-Tour ins Ahrtal
+          </h1>
+          <p className="text-lg md:text-xl text-stone-100 font-medium drop-shadow-md mb-2">
+            Unser gemeinsames Wochenende
+          </p>
+          <p className="text-md text-stone-200 drop-shadow-md">
+            11. - 12. April 2026 • Mayschoß
+          </p>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-5xl mx-auto px-6 py-12 -mt-16 relative z-20">
+        
+        {/* Info Hub Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Link to="/reiseplan" className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-4 group-hover:bg-stone-800 group-hover:text-white transition-colors">
+              <Calendar className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-serif font-medium mb-2">Programm</h3>
+            <p className="text-sm text-stone-500">Wann passiert was? Der komplette Zeitplan für Samstag & Sonntag.</p>
+          </Link>
+
+          <Link to="/packliste" className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
+              <ListTodo className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-serif font-medium mb-2">Packliste</h3>
+            <p className="text-sm text-stone-500">Wichtig: Erwin-Armbänder nicht vergessen! Checkliste für alle.</p>
+          </Link>
+
+          <Link to="/entdecken" className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-4 group-hover:bg-stone-800 group-hover:text-white transition-colors">
+              <MapPin className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-serif font-medium mb-2">Entdecken</h3>
+            <p className="text-sm text-stone-500">Infos zur Saffenburg-Wanderung und veganen Restaurants.</p>
+          </Link>
+        </div>
+
+        {/* Quick Info Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
+            <Calendar className="w-6 h-6 text-stone-400 mb-3" />
+            <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Datum</span>
+            <span className="font-medium text-stone-800">11.-12. April</span>
+          </div>
+          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
+            <MapPin className="w-6 h-6 text-stone-400 mb-3" />
+            <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Ort</span>
+            <span className="font-medium text-stone-800">Mayschoß</span>
+          </div>
+          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
+            <Bed className="w-6 h-6 text-stone-400 mb-3" />
+            <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Hotel</span>
+            <span className="font-medium text-stone-800">May Hotel</span>
+          </div>
+          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
+            {weather ? (
+              <>
+                {getWeatherIcon(weather.current.code)}
+                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Wetter</span>
+                <span className="font-medium text-stone-800">{weather.current.temp}°C</span>
+              </>
+            ) : (
+              <>
+                <Cloud className="w-6 h-6 text-stone-400 mb-3" />
+                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Wetter</span>
+                <span className="font-medium text-stone-800">Lädt...</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Weather Trend */}
+        {weather && (
+          <div className="bg-white/30 backdrop-blur-sm rounded-3xl p-4 mb-16 border border-stone-200/30 flex justify-around items-center">
+            <span className="text-xs font-bold text-stone-400 uppercase tracking-widest px-4">3-Tage Trend</span>
+            {weather.daily.map((day, i) => (
+              <div key={i} className="flex flex-col items-center px-4 border-l border-stone-200/50 first:border-0">
+                <span className="text-[10px] font-bold text-stone-500 uppercase mb-1">{formatDate(day.date)}</span>
+                {getWeatherIcon(day.code, "w-4 h-4")}
+                <span className="text-xs font-medium text-stone-800 mt-1">{Math.round(day.max)}° / {Math.round(day.min)}°</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Location Overview */}
+        <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-stone-100">
+          <h2 className="text-3xl font-serif mb-6 text-stone-800">Über Mayschoß & das Ahrtal</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="space-y-4 text-stone-600 leading-relaxed">
+              <p>
+                Eingebettet in das spektakuläre Ahrtal ist <strong>Mayschoß</strong> ein malerisches Weindorf, das für seine steilen Terrassenweinberge und erstklassigen Spätburgunder bekannt ist.
+              </p>
+              <p>
+                Hier befindet sich die <em>Winzergenossenschaft Mayschoß-Altenahr</em>, die älteste Winzergenossenschaft der Welt, gegründet 1868. Die Region bietet eine perfekte Mischung aus kulinarischer Exzellenz, dramatischen Landschaften und Naturerlebnissen.
+              </p>
+              <p>
+                Unser Basecamp, das <strong>Hotel Mayschoss</strong>, liegt direkt im Herzen des Tals und bietet einen einfachen Zugang zum berühmten Rotweinwanderweg und den Ufern der Ahr.
+              </p>
+              <div className="pt-4">
+                <Link to="/reiseplan" className="inline-flex items-center justify-center px-6 py-3 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors">
+                  Zum Programm
+                </Link>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden h-64 bg-stone-200">
+              <img 
+                src="https://www.ahrtal.com/fileadmin/user_upload/Ahrtal-Herbst-2022-149-Mayschoss-oberhalb_des_Michaelishofes.jpg" 
+                alt="Mayschoß im Herbst" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
