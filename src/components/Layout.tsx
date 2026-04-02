@@ -26,7 +26,7 @@ export default function Layout() {
   const mobileBottomNavItems = [
     { to: '/', icon: Home, label: 'Start' },
     { to: '/reiseplan', icon: Calendar, label: 'Programm' },
-    { to: '/galerie', icon: ImageIcon, label: 'Galerie' },
+    { to: '/hotel', icon: Building, label: 'Hotel' },
   ];
 
   return (
