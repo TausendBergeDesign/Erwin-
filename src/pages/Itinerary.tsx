@@ -1,4 +1,5 @@
-import { Clock, MapPin, Coffee, Wine, Bed, Utensils, Info } from 'lucide-react';
+import { Clock, MapPin, Coffee, Wine, Bed, Utensils, Info, Flame, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Itinerary() {
   const saturdayEvents = [
@@ -9,7 +10,9 @@ export default function Itinerary() {
       description: "Ankunft der Familie. Gepäck deponieren (Check-in regulär ab 15:00 Uhr). Kurzes Sammeln, Toilette, evtl. erster Kaffee im Ort.",
       icon: Bed,
       color: "bg-blue-100 text-blue-700",
-      image: "https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg"
+      image: "https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg",
+      link: "/hotel",
+      linkText: "Zum Hotel"
     },
     {
       time: "11:30",
@@ -18,7 +21,9 @@ export default function Itinerary() {
       description: "Rundwanderung (ca. 8,7 km, 215 hm, 2:30–3:00 Std). Leicht-mittel, geeignet für Senioren & Hunde. Aufstieg zur Saffenburg (360°-Panorama), Abstieg nach Rech (Pause), Rückweg nach Mayschoß (zu Fuß oder Bahn).",
       icon: MapPin,
       color: "bg-emerald-100 text-emerald-700",
-      image: "https://i.imgur.com/lYuGaaj.png"
+      image: "https://i.imgur.com/lYuGaaj.png",
+      link: "/wanderung",
+      linkText: "Details zur Wanderung"
     },
     {
       time: "15:15",
@@ -27,24 +32,42 @@ export default function Itinerary() {
       description: "Zimmerbezug, frisch machen. Optional: Kaffee, Kuchen, Ruhezeit.",
       icon: Coffee,
       color: "bg-amber-100 text-amber-700",
-      image: "https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg"
+      image: "https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg",
+      link: "/hotel",
+      linkText: "Zum Hotel"
     },
     {
       time: "16:30",
-      title: "Weinprobe",
+      title: "Weinprobe (Schlechtwetter-Option)",
       location: "Winzergenossenschaft Mayschoss",
-      description: "Kellerführung (ohne Hunde!), Weinbaumuseum, 5er- oder 6er-Weinprobe inkl. Wasser & Brot. Kosten ca. 220 Euro für die Gruppe. Ende ca. 18:30–18:45 Uhr. (Termin noch nicht fest bestätigt)",
+      description: "Kellerführung (ohne Hunde!), Weinbaumuseum, 5er- oder 6er-Weinprobe inkl. Wasser & Brot. Kosten ca. 220 Euro für die Gruppe. Ende ca. 18:30–18:45 Uhr. (Optional / Je nach Wetterlage)",
       icon: Wine,
       color: "bg-purple-100 text-purple-700",
-      image: "https://mayschoss.de/wp-content/uploads/2024/08/dummy-winzergenossenschaft.webp"
+      image: "https://mayschoss.de/wp-content/uploads/2024/08/dummy-winzergenossenschaft.webp",
+      link: "/entdecken",
+      linkText: "Mehr Infos"
     },
     {
       time: "19:00",
       title: "Gemeinsames Abendessen",
-      location: "Ort noch offen",
-      description: "Verschiedene Optionen (z.B. Bahnsteig 1, May Hotel, Weinhaus Kläs & Sohn). Vegane Optionen verfügbar.",
+      location: "May Hotel Mayschoss",
+      description: "Wir essen gemeinsam im Hotel. Hier gibt es für alle Geschmäcker und Ernährungsweisen passende Optionen (auch vegan/vegetarisch).",
       icon: Utensils,
-      color: "bg-orange-100 text-orange-700"
+      color: "bg-orange-100 text-orange-700",
+      image: "https://mayhotel.de/wp-content/uploads/2025/03/IMG_6142-600x450.jpg",
+      link: "/hotel",
+      linkText: "Zum Hotel"
+    },
+    {
+      time: "21:00",
+      title: "Umtrunk am Kamin",
+      location: "May Hotel Mayschoss",
+      description: "Gemütlicher Ausklang des Tages bei einem Umtrunk am Kamin. Zeit für Gespräche und Entspannung.",
+      icon: Flame,
+      color: "bg-red-100 text-red-700",
+      image: "https://www.ahrtal.com/uploads/tx_sfcontenthub/c5f667b2-c529-4ae1-9d11-bb2a744adb56.jpg",
+      link: "/hotel",
+      linkText: "Zum Hotel"
     }
   ];
 
@@ -85,6 +108,15 @@ export default function Itinerary() {
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">
                   {event.description}
                 </p>
+                {event.link && (
+                  <Link 
+                    to={event.link}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 mb-4 group/link"
+                  >
+                    {event.linkText}
+                    <ExternalLink className="w-3 h-3 transition-transform group-hover/link:translate-x-0.5" />
+                  </Link>
+                )}
                 {event.image && (
                   <div className="rounded-xl overflow-hidden border border-stone-100 shadow-sm">
                     <img 

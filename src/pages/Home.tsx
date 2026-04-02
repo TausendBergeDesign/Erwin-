@@ -9,25 +9,34 @@ export default function Home() {
   } | null>(null);
 
   useEffect(() => {
-    // Fetch weather for Mayschoß (approx 50.52, 7.02)
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=50.52&longitude=7.02&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=3')
-      .then(res => res.json())
-      .then(data => {
-        const daily = data.daily.time.map((date: string, i: number) => ({
-          date,
-          max: data.daily.temperature_2m_max[i],
-          min: data.daily.temperature_2m_min[i],
-          code: data.daily.weather_code[i]
-        }));
-        setWeather({
-          current: {
-            temp: data.current.temperature_2m,
-            code: data.current.weather_code
-          },
-          daily
-        });
-      })
-      .catch(err => console.error("Weather fetch error:", err));
+    const fetchWeather = () => {
+      // Fetch weather for Mayschoß (approx 50.52, 7.02) for the specific event dates
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=50.52&longitude=7.02&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&start_date=2026-04-11&end_date=2026-04-12')
+        .then(res => res.json())
+        .then(data => {
+          if (data.daily) {
+            const daily = data.daily.time.map((date: string, i: number) => ({
+              date,
+              max: data.daily.temperature_2m_max[i],
+              min: data.daily.temperature_2m_min[i],
+              code: data.daily.weather_code[i]
+            }));
+            setWeather({
+              current: {
+                temp: daily[0].max,
+                code: daily[0].code
+              },
+              daily
+            });
+          }
+        })
+        .catch(err => console.error("Weather fetch error:", err));
+    };
+
+    fetchWeather();
+    // Refresh every 30 minutes to ensure it's "always updating"
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const getWeatherIcon = (code: number, size = "w-6 h-6") => {
@@ -38,7 +47,7 @@ export default function Home() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('de-DE', { weekday: 'short' });
+    return date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
   };
 
   return (
@@ -122,16 +131,16 @@ export default function Home() {
             <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Ort</span>
             <span className="font-medium text-stone-800">Mayschoß</span>
           </div>
-          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
-            <Bed className="w-6 h-6 text-stone-400 mb-3" />
+          <Link to="/hotel" className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center hover:bg-white transition-colors group">
+            <Bed className="w-6 h-6 text-stone-400 mb-3 group-hover:text-stone-800 transition-colors" />
             <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Hotel</span>
             <span className="font-medium text-stone-800">May Hotel</span>
-          </div>
+          </Link>
           <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
             {weather ? (
               <>
                 {getWeatherIcon(weather.current.code)}
-                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Wetter</span>
+                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Event-Wetter</span>
                 <span className="font-medium text-stone-800">{weather.current.temp}°C</span>
               </>
             ) : (
@@ -147,7 +156,7 @@ export default function Home() {
         {/* Weather Trend */}
         {weather && (
           <div className="bg-white/30 backdrop-blur-sm rounded-3xl p-4 mb-16 border border-stone-200/30 flex justify-around items-center">
-            <span className="text-xs font-bold text-stone-400 uppercase tracking-widest px-4">3-Tage Trend</span>
+            <span className="text-xs font-bold text-stone-400 uppercase tracking-widest px-4">Wetter am Wochenende</span>
             {weather.daily.map((day, i) => (
               <div key={i} className="flex flex-col items-center px-4 border-l border-stone-200/50 first:border-0">
                 <span className="text-[10px] font-bold text-stone-500 uppercase mb-1">{formatDate(day.date)}</span>
@@ -159,6 +168,59 @@ export default function Home() {
         )}
 
         {/* Location Overview */}
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-stone-100 flex flex-col justify-center">
+            <h2 className="text-3xl font-serif mb-6 text-stone-800">Unser Basecamp</h2>
+            <div className="space-y-4 text-stone-600 leading-relaxed mb-8">
+              <p>
+                Wir residieren im <Link to="/hotel" className="text-emerald-700 font-bold hover:underline">May Hotel Mayschoß</Link>, direkt im Herzen des Ahrtals. 
+              </p>
+              <p>
+                Von hier aus haben wir den perfekten Startpunkt für unsere Wanderung und sind nur wenige Schritte von der Winzergenossenschaft und dem gemütlichen Ortskern entfernt.
+              </p>
+            </div>
+            <Link to="/hotel" className="inline-flex items-center justify-center px-6 py-3 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors w-fit">
+              Hotel-Details ansehen
+            </Link>
+          </div>
+          <div className="rounded-3xl overflow-hidden h-80 md:h-full shadow-sm border border-stone-100">
+            <img 
+              src="https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg" 
+              alt="May Hotel Mayschoß" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </div>
+
+        {/* Hike Teaser */}
+        <div className="bg-emerald-900 rounded-[2.5rem] p-8 md:p-12 text-white overflow-hidden relative mb-16">
+          <div className="relative z-10 max-w-2xl">
+            <h2 className="text-3xl md:text-4xl font-serif mb-6">Die Saffenburgrunde</h2>
+            <p className="text-emerald-100 mb-8 leading-relaxed text-lg">
+              Freut euch auf 8,7 km pure Ahrtal-Idylle. Wir wandern zur Saffenburg, genießen den Weinautomaten mit Aussicht und kehren über Rech zurück nach Mayschoß.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/wanderung" className="px-6 py-3 bg-white text-emerald-900 rounded-full font-bold hover:bg-emerald-50 transition-colors">
+                Zur Wanderkarte
+              </Link>
+              <div className="flex items-center gap-2 text-emerald-200 text-sm font-medium px-4 py-3 border border-emerald-700 rounded-full">
+                <Wine className="w-4 h-4" />
+                Weinautomat inklusive
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-0 right-0 w-1/3 h-full hidden lg:block">
+            <img 
+              src="https://www.ahrtal.com/fileadmin/_processed_/csm_Saffenburg-Mayschoss-Ahrtal-Tourismus-Dominik-Ketz-001_198544e432.jpg" 
+              alt="Saffenburg Aussicht" 
+              className="w-full h-full object-cover opacity-20 mix-blend-overlay"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </div>
+
+        {/* Ahrtal Info */}
         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-stone-100">
           <h2 className="text-3xl font-serif mb-6 text-stone-800">Über Mayschoß & das Ahrtal</h2>
           <div className="grid md:grid-cols-2 gap-12">
@@ -167,14 +229,11 @@ export default function Home() {
                 Eingebettet in das spektakuläre Ahrtal ist <strong>Mayschoß</strong> ein malerisches Weindorf, das für seine steilen Terrassenweinberge und erstklassigen Spätburgunder bekannt ist.
               </p>
               <p>
-                Hier befindet sich die <em>Winzergenossenschaft Mayschoß-Altenahr</em>, die älteste Winzergenossenschaft der Welt, gegründet 1868. Die Region bietet eine perfekte Mischung aus kulinarischer Exzellenz, dramatischen Landschaften und Naturerlebnissen.
-              </p>
-              <p>
-                Unser Basecamp, das <strong>Hotel Mayschoss</strong>, liegt direkt im Herzen des Tals und bietet einen einfachen Zugang zum berühmten Rotweinwanderweg und den Ufern der Ahr.
+                Hier befindet sich die <em>Winzergenossenschaft Mayschoß-Altenahr</em>, die älteste Winzergenossenschaft der Welt, gegründet 1868. Die Region bietet eine perfekte Mischung aus kulinarischer Exzellenz und Naturerlebnissen.
               </p>
               <div className="pt-4">
-                <Link to="/reiseplan" className="inline-flex items-center justify-center px-6 py-3 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors">
-                  Zum Programm
+                <Link to="/entdecken" className="inline-flex items-center justify-center px-6 py-3 border-2 border-stone-200 text-stone-700 rounded-full font-medium hover:bg-stone-50 transition-colors">
+                  Mehr entdecken
                 </Link>
               </div>
             </div>

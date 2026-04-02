@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "Photo": {
+      "title": "Photo",
+      "description": "A photo uploaded by a family member.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The base64 encoded image data or a URL."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the photo was uploaded."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who uploaded the photo."
+        }
+      },
+      "required": ["url", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/photos/{photoId}": {
+      "schema": "Photo",
+      "description": "Collection of photos shared by the family."
+    }
+  }
+}

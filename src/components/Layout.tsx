@@ -1,11 +1,14 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { Home, Calendar, MapPin, ListTodo, Image as ImageIcon } from 'lucide-react';
+import { Home, Calendar, MapPin, ListTodo, Image as ImageIcon, Building, Binoculars, Footprints } from 'lucide-react';
 
 export default function Layout() {
   const navItems = [
     { to: '/', icon: Home, label: 'Start' },
     { to: '/reiseplan', icon: Calendar, label: 'Programm' },
-    { to: '/entdecken', icon: MapPin, label: 'Entdecken' },
+    { to: '/hotel', icon: Building, label: 'Hotel' },
+    { to: '/mayschoss', icon: MapPin, label: 'Mayschoß' },
+    { to: '/wanderung', icon: Footprints, label: 'Wanderung' },
+    { to: '/entdecken', icon: Binoculars, label: 'Entdecken' },
     { to: '/packliste', icon: ListTodo, label: 'Packliste' },
     { to: '/galerie', icon: ImageIcon, label: 'Galerie' },
   ];

@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: photos
+    // Document ID: auto-generated
+    // Fields:
+    //   - url: string (required) - The image data (base64)
+    //   - createdAt: timestamp (required) - When it was uploaded
+    //   - userId: string (required) - The UID of the uploader
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidPhoto(data) {
+      return data.url is string && 
+             data.url.size() < 2000000 && // Limit size for base64 (approx 1.5MB)
+             data.createdAt is timestamp &&
+             data.userId is string &&
+             data.userId == request.auth.uid;
+    }
+
+    match /photos/{photoId} {
+      // Anyone can see the photos
+      allow read: if true;
+      
+      // Only authenticated users can upload
+      allow create: if isAuthenticated() && isValidPhoto(request.resource.data);
+      
+      // Only the owner can delete their photo
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      
+      // No updates allowed for photos once uploaded
+      allow update: if false;
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
