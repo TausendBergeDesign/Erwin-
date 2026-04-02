@@ -90,12 +90,12 @@ export default function PackingList() {
       </div>
 
       {/* Weather Widget */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 mb-10 border border-blue-100 shadow-sm flex items-center justify-between">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 mb-10 border border-blue-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-sm font-bold text-blue-800 uppercase tracking-wider mb-1">Aktuelles Wetter in Mayschoß</h2>
           <p className="text-xs text-blue-600">Zur Orientierung für die Packliste</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 self-end sm:self-auto">
           {loading ? (
             <div className="animate-pulse w-16 h-8 bg-blue-200 rounded"></div>
           ) : weather ? (

@@ -100,7 +100,7 @@ export default function Gallery() {
     const files = e.target.files;
     if (files && files.length > 0) {
       setIsUploading(true);
-      const fileArray = Array.from(files);
+      const fileArray = Array.from(files) as File[];
       
       try {
         for (const file of fileArray) {
@@ -153,8 +153,8 @@ export default function Gallery() {
           <h1 className="text-4xl font-serif text-stone-800 mb-3">Galerie</h1>
           <p className="text-stone-500">Erinnerungen an unseren Familienausflug.</p>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex gap-3">
+        <div className="flex flex-col items-start md:items-end gap-2">
+          <div className="flex gap-3 w-full md:w-auto">
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -166,7 +166,7 @@ export default function Gallery() {
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm w-full md:w-auto ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {isUploading ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

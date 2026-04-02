@@ -162,15 +162,17 @@ export default function Home() {
 
         {/* Weather Trend */}
         {weather && (
-          <div className="bg-white/30 backdrop-blur-sm rounded-3xl p-4 mb-16 border border-stone-200/30 flex justify-around items-center">
-            <span className="text-xs font-bold text-stone-400 uppercase tracking-widest px-4">Wetter am Wochenende</span>
-            {weather.daily.map((day, i) => (
-              <div key={i} className="flex flex-col items-center px-4 border-l border-stone-200/50 first:border-0">
-                <span className="text-[10px] font-bold text-stone-500 uppercase mb-1">{formatDate(day.date)}</span>
-                {getWeatherIcon(day.code, "w-4 h-4")}
-                <span className="text-xs font-medium text-stone-800 mt-1">{Math.round(day.max)}° / {Math.round(day.min)}°</span>
-              </div>
-            ))}
+          <div className="bg-white/30 backdrop-blur-sm rounded-3xl p-4 sm:p-4 mb-16 border border-stone-200/30 flex flex-col sm:flex-row justify-around items-center gap-4 sm:gap-0">
+            <span className="text-xs font-bold text-stone-400 uppercase tracking-widest px-4 text-center">Wetter am Wochenende</span>
+            <div className="flex justify-center w-full sm:w-auto">
+              {weather.daily.map((day, i) => (
+                <div key={i} className="flex flex-col items-center px-6 sm:px-4 border-l border-stone-200/50 first:border-0">
+                  <span className="text-[10px] font-bold text-stone-500 uppercase mb-1">{formatDate(day.date)}</span>
+                  {getWeatherIcon(day.code, "w-4 h-4")}
+                  <span className="text-xs font-medium text-stone-800 mt-1">{Math.round(day.max)}° / {Math.round(day.min)}°</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

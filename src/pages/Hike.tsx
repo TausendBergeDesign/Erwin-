@@ -69,31 +69,31 @@ export default function Hike() {
       </div>
 
       {/* Hero Section */}
-      <div className="grid md:grid-cols-5 gap-4 mb-16">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-16">
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
           <Clock className="w-8 h-8 text-emerald-600 mb-3" />
-          <span className="text-2xl font-serif text-stone-800">2:40 Std.</span>
-          <span className="text-stone-400 text-sm uppercase tracking-wider font-bold">Dauer</span>
+          <span className="text-xl md:text-2xl font-serif text-stone-800">2:40 Std.</span>
+          <span className="text-stone-400 text-xs md:text-sm uppercase tracking-wider font-bold">Dauer</span>
         </div>
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
           <TrendingUp className="w-8 h-8 text-emerald-600 mb-3" />
-          <span className="text-2xl font-serif text-stone-800">8,7 km</span>
-          <span className="text-stone-400 text-sm uppercase tracking-wider font-bold">Strecke</span>
+          <span className="text-xl md:text-2xl font-serif text-stone-800">8,7 km</span>
+          <span className="text-stone-400 text-xs md:text-sm uppercase tracking-wider font-bold">Strecke</span>
         </div>
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
           <Map className="w-8 h-8 text-emerald-600 mb-3" />
-          <span className="text-2xl font-serif text-stone-800">215 m</span>
-          <span className="text-stone-400 text-sm uppercase tracking-wider font-bold">Aufstieg</span>
+          <span className="text-xl md:text-2xl font-serif text-stone-800">215 m</span>
+          <span className="text-stone-400 text-xs md:text-sm uppercase tracking-wider font-bold">Aufstieg</span>
         </div>
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
           <TrendingUp className="w-8 h-8 text-emerald-600 mb-3 rotate-180" />
-          <span className="text-2xl font-serif text-stone-800">213 m</span>
-          <span className="text-stone-400 text-sm uppercase tracking-wider font-bold">Abstieg</span>
+          <span className="text-xl md:text-2xl font-serif text-stone-800">213 m</span>
+          <span className="text-stone-400 text-xs md:text-sm uppercase tracking-wider font-bold">Abstieg</span>
         </div>
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center">
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center text-center col-span-2 sm:col-span-1 md:col-span-1">
           <Footprints className="w-8 h-8 text-emerald-600 mb-3" />
-          <span className="text-2xl font-serif text-stone-800">Leicht</span>
-          <span className="text-stone-400 text-sm uppercase tracking-wider font-bold">Schwierigkeit</span>
+          <span className="text-xl md:text-2xl font-serif text-stone-800">Leicht</span>
+          <span className="text-stone-400 text-xs md:text-sm uppercase tracking-wider font-bold">Schwierigkeit</span>
         </div>
       </div>
 
