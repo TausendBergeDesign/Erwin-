@@ -23,26 +23,23 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    function isValidPhoto(data) {
-      return data.url is string && 
-             data.url.size() < 2000000 && // Limit size for base64 (approx 1.5MB)
-             data.createdAt is timestamp &&
-             data.userId is string &&
-             data.userId == request.auth.uid;
+    match /photos/{photoId} {
+      // Anyone can see and upload photos for this family event
+      allow read: if true;
+      allow create: if isValidPhoto(request.resource.data);
+      
+      // Deletion is restricted to prevent accidental data loss in a public-write setup
+      // If needed, we could add a simple password or just disable deletion for now
+      allow delete: if false;
+      
+      // No updates allowed
+      allow update: if false;
     }
 
-    match /photos/{photoId} {
-      // Anyone can see the photos
-      allow read: if true;
-      
-      // Only authenticated users can upload
-      allow create: if isAuthenticated() && isValidPhoto(request.resource.data);
-      
-      // Only the owner can delete their photo
-      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      
-      // No updates allowed for photos once uploaded
-      allow update: if false;
+    function isValidPhoto(data) {
+      return data.url is string && 
+             data.url.size() < 2000000 && 
+             data.createdAt is timestamp;
     }
     
     // Default deny

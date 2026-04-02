@@ -11,7 +11,7 @@ import {
   doc, 
   serverTimestamp 
 } from 'firebase/firestore';
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { db, auth } from '../firebase';
 
 // Error handling types
@@ -70,23 +70,14 @@ interface Photo {
   id: string;
   url: string;
   createdAt: any;
-  userId: string;
 }
 
 export default function Gallery() {
   const [images, setImages] = useState<Photo[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     const q = query(collection(db, 'photos'), orderBy('createdAt', 'desc'));
@@ -96,61 +87,55 @@ export default function Gallery() {
         photoData.push({ id: doc.id, ...doc.data() } as Photo);
       });
       setImages(photoData);
+      setLoading(false);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'photos');
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const handleLogin = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
-  };
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!user) {
-      alert("Bitte logge dich ein, um Fotos hochzuladen.");
-      return;
-    }
-
     const files = e.target.files;
-    if (files) {
-      Array.from(files).forEach((file: File) => {
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          if (event.target?.result) {
-            try {
-              await addDoc(collection(db, 'photos'), {
-                url: event.target!.result as string,
-                createdAt: serverTimestamp(),
-                userId: user.uid
-              });
-            } catch (error) {
-              handleFirestoreError(error, OperationType.CREATE, 'photos');
-            }
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+    if (files && files.length > 0) {
+      setIsUploading(true);
+      const fileArray = Array.from(files);
+      
+      try {
+        for (const file of fileArray) {
+          const reader = new FileReader();
+          const uploadPromise = new Promise((resolve, reject) => {
+            reader.onload = async (event) => {
+              if (event.target?.result) {
+                try {
+                  await addDoc(collection(db, 'photos'), {
+                    url: event.target!.result as string,
+                    createdAt: serverTimestamp()
+                  });
+                  resolve(true);
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          await uploadPromise;
+        }
+      } catch (error) {
+        handleFirestoreError(error, OperationType.CREATE, 'photos');
+      } finally {
+        setIsUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
     }
   };
 
-  const handleDelete = async (id: string, photoUserId: string) => {
-    if (!user || user.uid !== photoUserId) {
-      alert("Du kannst nur deine eigenen Fotos löschen.");
-      return;
-    }
-
-    try {
-      await deleteDoc(doc(db, 'photos', id));
-    } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, `photos/${id}`);
-    }
+  const handleDelete = async (id: string) => {
+    // Deletion is currently disabled for public safety
+    console.log("Deletion is disabled in public mode", id);
   };
 
   if (loading) {
@@ -168,34 +153,29 @@ export default function Gallery() {
           <h1 className="text-4xl font-serif text-stone-800 mb-3">Galerie</h1>
           <p className="text-stone-500">Erinnerungen an unseren Familienausflug.</p>
         </div>
-        <div className="flex gap-3">
-          {!user ? (
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex gap-3">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleUpload} 
+              multiple 
+              accept="image/*" 
+              className="hidden" 
+            />
             <button 
-              onClick={handleLogin}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              <LogIn className="w-4 h-4" />
-              Anmelden zum Hochladen
-            </button>
-          ) : (
-            <>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleUpload} 
-                multiple 
-                accept="image/*" 
-                className="hidden" 
-              />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm"
-              >
+              {isUploading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
                 <Upload className="w-4 h-4" />
-                Fotos hochladen
-              </button>
-            </>
-          )}
+              )}
+              {isUploading ? 'Wird hochgeladen...' : 'Fotos hochladen'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -231,15 +211,6 @@ export default function Gallery() {
                 >
                   <Maximize2 className="w-5 h-5" />
                 </button>
-                {user && user.uid === photo.userId && (
-                  <button 
-                    onClick={() => handleDelete(photo.id, photo.userId)}
-                    className="p-2 bg-red-500/90 rounded-full text-white hover:bg-red-500 transition-colors"
-                    title="Löschen"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )}
               </div>
             </motion.div>
           ))}
