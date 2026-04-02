@@ -136,21 +136,28 @@ export default function Home() {
             <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Hotel</span>
             <span className="font-medium text-stone-800">May Hotel</span>
           </Link>
-          <div className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center">
+          <a 
+            href="https://www.wetteronline.de/wetter/mayschoss" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-stone-200/50 flex flex-col items-center text-center hover:bg-white transition-colors group"
+          >
             {weather ? (
               <>
-                {getWeatherIcon(weather.current.code)}
-                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Event-Wetter</span>
+                <div className="group-hover:scale-110 transition-transform">
+                  {getWeatherIcon(weather.current.code)}
+                </div>
+                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider mt-3">Event-Wetter</span>
                 <span className="font-medium text-stone-800">{weather.current.temp}°C</span>
               </>
             ) : (
               <>
-                <Cloud className="w-6 h-6 text-stone-400 mb-3" />
+                <Cloud className="w-6 h-6 text-stone-400 mb-3 group-hover:text-stone-600 transition-colors" />
                 <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider">Wetter</span>
                 <span className="font-medium text-stone-800">Lädt...</span>
               </>
             )}
-          </div>
+          </a>
         </div>
 
         {/* Weather Trend */}
