@@ -20,7 +20,7 @@ export default function PackingList() {
         setLoading(false);
       })
       .catch(err => {
-        console.error("Weather fetch error:", err);
+        console.warn("Weather fetch warning:", err);
         setLoading(false);
       });
   }, []);

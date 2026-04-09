@@ -86,10 +86,10 @@ export default function Explore() {
             <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
               <h4 className="font-medium text-purple-800 mb-2 flex items-center gap-2">
                 <Info className="w-4 h-4 text-purple-500" />
-                Status: Optional / Schlechtwetter-Alternative
+                Hinweis
               </h4>
               <p className="text-sm text-purple-700">
-                Wird kurzfristig je nach Wetterlage und Lust der Gruppe entschieden.
+                Ab 6€ p.P. kann ein Ticket für das Gelände der Winzergenossenschaft gekauft werden, damit man sich den Weinkeller anschauen und 3 Weine verkosten kann.
               </p>
             </div>
           </div>

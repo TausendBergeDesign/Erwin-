@@ -1,4 +1,4 @@
-import { Map, Info, Navigation, ExternalLink, Camera, Footprints, Clock, TrendingUp, Utensils, Wine } from 'lucide-react';
+import { Map, Info, Navigation, ExternalLink, Camera, Footprints, Clock, TrendingUp, Utensils, Wine, Coffee } from 'lucide-react';
 import HikeMap from '../components/HikeMap';
 
 export default function Hike() {
@@ -6,56 +6,49 @@ export default function Hike() {
     {
       title: "Startpunkt Bahnhof Mayschoß",
       distance: "0 KM",
-      desc: "Unser Treffpunkt und Start der Wanderung direkt am historischen Bahnhofsgebäude.",
+      desc: "Unser Treffpunkt und Start der Wanderung. Wir starten gemütlich in Richtung Dorfmitte.",
       icon: Navigation,
       image: "https://bf-a.zielbahnhof.de/index_htm_files/809656.png"
     },
     {
-      title: "Weinautomat an der Saffenburg",
-      distance: "1,2 KM",
-      desc: "Ein kühler Wein direkt am Aussichtspunkt – perfekt für eine kleine Pause mit Blick ins Ahrtal.",
-      icon: Wine,
-      image: "https://www.volksfreund.de/imgs/28/1/5/8/8/9/1/9/0/7/tok_9e198318abd47b814bc94c7ba1926291/w1900_h1268_x1496_y998_DPA_bfunk_dpa_5FAC8800D8052FCC-9a6fa92590fba3c2.jpg"
+      title: "Mittagessen im Michaelishof",
+      distance: "1,1 KM",
+      desc: "Erster großer Stopp: Wir stärken uns im Weinhaus Michaelishof für die kommende Strecke und sitzen schön auf der Terrasse.",
+      icon: Utensils,
+      image: "https://mayschoss.de/wp-content/uploads/2025/11/Michaelishof_DAS-WEINHAUS-scaled-1-768x512.jpg"
     },
     {
-      title: "Saffenburg",
-      distance: "1,2 KM",
-      desc: "Die älteste Burganlage im Ahrtal. Von hier hat man einen sensationellen 360°-Panoramablick über das Tal.",
-      icon: Camera,
-      image: "https://img0.oastatic.com/img2/50998261/max/variant.webp?revbust=705e5b64"
-    },
-    {
-      title: "Blick nach Rech",
-      distance: "1,4 KM",
-      desc: "Ein herrlicher Ausblick auf den benachbarten Weinort Rech und die Ahrschleife.",
-      icon: Map,
-      image: "https://img2.oastatic.com/img2/8094738/max/variant.jpg?revbust=705e5b64"
-    },
-    {
-      title: "Idylle im Weinort Rech",
-      distance: "2,8 KM",
-      desc: "Wir wandern durch den malerischen Ort Rech mit seinen Fachwerkhäusern und der historischen Ahrbrücke.",
+      title: "Weg nach Rech (Ahr-Ufer)",
+      distance: "3,5 KM",
+      desc: "Wir wandern entspannt entlang der Ahr in Richtung des malerischen Nachbarortes Rech.",
       icon: Footprints,
       image: "https://img1.oastatic.com/img2/8094727/max/variant.jpg?revbust=705e5b64"
     },
     {
-      title: "Dorftüren 'Willkommen in Mayschoß'",
+      title: "Rech: Kaffee, Kuchen & Bahn-Option",
       distance: "4,8 KM",
-      desc: "Die kunstvoll gestalteten Dorftüren begrüßen uns zurück in Mayschoß.",
-      icon: Info,
-      image: "https://saffenburg.de/fileadmin/_processed_/csm_mayschoss-tuer-herbst-klein_e5fa26c802.jpg"
+      desc: "Pause in Rech. Wer möchte, kann von hier aus gemütlich mit der Bahn zurück nach Mayschoß fahren (ca. 3 Min Fahrt).",
+      icon: Coffee,
+      image: "https://img1.oastatic.com/img2/8094727/max/variant.jpg?revbust=705e5b64"
     },
     {
-      title: "Michaelskapelle Mayschoß",
-      distance: "5 KM",
-      desc: "Ein kleiner kultureller Stopp an der Kapelle, bevor es zum Endspurt geht.",
-      icon: Camera,
-      image: "https://img0.oastatic.com/img2/83121936/max/variant.jpg?revbust=705e5b64"
+      title: "Anstieg & Weinautomat",
+      distance: "7,2 KM",
+      desc: "Für die Wanderlustigen: Der Anstieg von Rech aus zur Saffenburg. Auf dem Weg nach oben wartet der Weinautomat auf uns!",
+      icon: TrendingUp,
+      image: "https://www.volksfreund.de/imgs/28/1/5/8/8/9/1/9/0/7/tok_9e198318abd47b814bc94c7ba1926291/w1900_h1268_x1496_y998_DPA_bfunk_dpa_5FAC8800D8052FCC-9a6fa92590fba3c2.jpg"
     },
     {
-      title: "Aussichtspunkt Blick auf Mayschoß",
-      distance: "5,98 KM",
-      desc: "Der letzte große Ausblick auf unseren Zielort, bevor wir wieder am Bahnhof ankommen.",
+      title: "Saffenburg",
+      distance: "7,5 KM",
+      desc: "Mit dem frischen Wein aus dem Automaten genießen wir auf der Burgruine das 360°-Panorama über das Ahrtal.",
+      icon: Wine,
+      image: "https://img0.oastatic.com/img2/50998261/max/variant.webp?revbust=705e5b64"
+    },
+    {
+      title: "Abstieg & Ziel Mayschoß",
+      distance: "8,7 KM",
+      desc: "Zurück in Mayschoß. Wir beenden die Runde am Bahnhof und machen uns auf zum Hotel.",
       icon: Map,
       image: "https://d2exd72xrrp1s7.cloudfront.net/www/000/1k0/in/inlfyt6h0zk16w1zh5lszlx21wgn794r-uhi516900/0?width=1920&crop=false&q=70"
     }
@@ -107,10 +100,10 @@ export default function Hike() {
             </h2>
             <div className="prose prose-stone max-w-none text-stone-600 leading-relaxed space-y-4">
               <p>
-                Diese abwechslungsreiche <strong>8,7 km lange Rundwanderung</strong> startet am Bahnhof in Mayschoß. Der Weg führt uns zunächst hinauf zur majestätischen <strong>Ruine Saffenburg</strong>, wo wir den berühmten 360-Grad-Panoramablick genießen können.
+                Diese abwechslungsreiche <strong>8,7 km lange Rundwanderung</strong> startet am Bahnhof in Mayschoß. Wir wandern zuerst durch den Ort zum <strong>Mittagessen im Michaelishof</strong>. Danach geht es entspannt entlang der Ahr nach <strong>Rech</strong>, wo wir eine Kaffeepause einlegen können.
               </p>
               <p>
-                Nach dem Besuch der Saffenburg führt die Route weiter durch die Weinberge und Wälder in Richtung des malerischen Nachbarortes <strong>Rech</strong>. Dort bietet sich eine ideale Gelegenheit für eine kleine Pause, bevor wir über den <strong>Rotweinwanderweg</strong> oder entlang der Ahr zurück nach Mayschoß wandern.
+                In Rech besteht die Option, mit der Bahn zurückzufahren, falls der letzte Anstieg ausgelassen werden soll. Für alle anderen folgt der Aufstieg zur majestätischen <strong>Ruine Saffenburg</strong> mit dem berühmten 360-Grad-Panoramablick und dem <strong>Weinautomaten</strong>, bevor es zurück zum Ausgangspunkt geht.
               </p>
               <p>
                 Die Tour ist mit ca. 215 Höhenmetern moderat und bietet durchgehend befestigte Wege, die auch für Gelegenheitswanderer sehr gut geeignet sind.

@@ -30,7 +30,7 @@ export default function Home() {
             });
           }
         })
-        .catch(err => console.error("Weather fetch error:", err));
+        .catch(err => console.warn("Weather fetch warning:", err));
     };
 
     fetchWeather();
@@ -199,6 +199,32 @@ export default function Home() {
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
+          </div>
+        </div>
+
+        {/* Erwin-Tour Weinglas */}
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="rounded-3xl overflow-hidden h-80 md:h-full shadow-sm border border-stone-100 order-2 md:order-1">
+            <img 
+              src="https://i.ibb.co/9krBrmkk/IMG-1453.jpg" 
+              alt="Erwin-Tour Weinglas" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?q=80&w=2000&auto=format&fit=crop";
+              }}
+            />
+          </div>
+          <div className="bg-amber-50 rounded-3xl p-8 md:p-10 shadow-sm border border-amber-100 flex flex-col justify-center order-1 md:order-2">
+            <h2 className="text-3xl font-serif mb-6 text-amber-900">Unser Wegbegleiter</h2>
+            <div className="space-y-4 text-amber-800 leading-relaxed">
+              <p>
+                Was wäre eine Tour durch das Ahrtal ohne das passende Glas? Für unsere Erwin-Tour haben wir ein <strong>exklusives Erwin-Tour Weinglas</strong> anfertigen lassen.
+              </p>
+              <p>
+                Es wird unser treuer Begleiter für gute und leckere Weine aus der Region sein – egal ob beim Picknick, am Weinautomaten oder abends im Hotel.
+              </p>
+            </div>
           </div>
         </div>
 
