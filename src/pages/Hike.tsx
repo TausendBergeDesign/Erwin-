@@ -22,7 +22,7 @@ export default function Hike() {
       distance: "3,5 KM",
       desc: "Wir wandern entspannt entlang der Ahr in Richtung des malerischen Nachbarortes Rech.",
       icon: Footprints,
-      image: "https://img1.oastatic.com/img2/8094727/max/variant.jpg?revbust=705e5b64"
+      image: "https://img2.oastatic.com/img2/8094738/max/variant.jpg?revbust=705e5b64"
     },
     {
       title: "Rech: Kaffee, Kuchen & Bahn-Option",
@@ -33,14 +33,14 @@ export default function Hike() {
     },
     {
       title: "Anstieg & Weinautomat",
-      distance: "7,2 KM",
+      distance: "6,5 KM",
       desc: "Für die Wanderlustigen: Der Anstieg von Rech aus zur Saffenburg. Auf dem Weg nach oben wartet der Weinautomat auf uns!",
       icon: TrendingUp,
       image: "https://www.volksfreund.de/imgs/28/1/5/8/8/9/1/9/0/7/tok_9e198318abd47b814bc94c7ba1926291/w1900_h1268_x1496_y998_DPA_bfunk_dpa_5FAC8800D8052FCC-9a6fa92590fba3c2.jpg"
     },
     {
       title: "Saffenburg",
-      distance: "7,5 KM",
+      distance: "7,2 KM",
       desc: "Mit dem frischen Wein aus dem Automaten genießen wir auf der Burgruine das 360°-Panorama über das Ahrtal.",
       icon: Wine,
       image: "https://img0.oastatic.com/img2/50998261/max/variant.webp?revbust=705e5b64"

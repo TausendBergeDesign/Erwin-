@@ -6,7 +6,7 @@ export default function Explore() {
     {
       name: "May Hotel Mayschoß",
       location: "Mayschoß",
-      desc: "Unsere Wahl für das gemeinsame Abendessen. Hier gibt es für alle etwas zu essen (auch vegan/vegetarisch).",
+      desc: "Unsere Wahl für das gemeinsame Abendessen. Es gibt ein Buffet, bei dem für alle etwas dabei ist (auch vegan/vegetarisch).",
       vegan: "Sehr gut",
       image: "https://mayschoss.de/wp-content/uploads/2025/11/May-Hotel-2025-128-2048x1366.jpg",
       selected: true,

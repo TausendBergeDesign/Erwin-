@@ -6,37 +6,16 @@ export default function Home() {
   const [weather, setWeather] = useState<{
     current: { temp: number, code: number },
     daily: { date: string, max: number, min: number, code: number }[]
-  } | null>(null);
+  } | null>({
+    current: { temp: 21, code: 0 },
+    daily: [
+      { date: "2026-04-11", max: 21, min: 5, code: 0 },
+      { date: "2026-04-12", max: 12, min: 7, code: 3 }
+    ]
+  });
 
   useEffect(() => {
-    const fetchWeather = () => {
-      // Fetch weather for Mayschoß (approx 50.52, 7.02) for the specific event dates
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=50.52&longitude=7.02&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin&start_date=2026-04-11&end_date=2026-04-12')
-        .then(res => res.json())
-        .then(data => {
-          if (data.daily) {
-            const daily = data.daily.time.map((date: string, i: number) => ({
-              date,
-              max: data.daily.temperature_2m_max[i],
-              min: data.daily.temperature_2m_min[i],
-              code: data.daily.weather_code[i]
-            }));
-            setWeather({
-              current: {
-                temp: daily[0].max,
-                code: daily[0].code
-              },
-              daily
-            });
-          }
-        })
-        .catch(err => console.warn("Weather fetch warning:", err));
-    };
-
-    fetchWeather();
-    // Refresh every 30 minutes to ensure it's "always updating"
-    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
-    return () => clearInterval(interval);
+    // Wetterdaten sind nun fest hinterlegt, um exakt mit der gewünschten Vorhersage übereinzustimmen
   }, []);
 
   const getWeatherIcon = (code: number, size = "w-6 h-6") => {
@@ -147,8 +126,8 @@ export default function Home() {
                 <div className="group-hover:scale-110 transition-transform">
                   {getWeatherIcon(weather.current.code)}
                 </div>
-                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider mt-3">Event-Wetter</span>
-                <span className="font-medium text-stone-800">{weather.current.temp}°C</span>
+                <span className="text-xs text-stone-500 mb-1 uppercase tracking-wider mt-3">Wetter 11.04.</span>
+                <span className="font-medium text-stone-800">{Math.round(weather.current.temp)}°C</span>
               </>
             ) : (
               <>

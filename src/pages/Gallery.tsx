@@ -72,6 +72,42 @@ interface Photo {
   createdAt: any;
 }
 
+const resizeImage = (file: File, maxWidth: number, maxHeight: number): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+};
+
 export default function Gallery() {
   const [images, setImages] = useState<Photo[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -104,25 +140,15 @@ export default function Gallery() {
       
       try {
         for (const file of fileArray) {
-          const reader = new FileReader();
-          const uploadPromise = new Promise((resolve, reject) => {
-            reader.onload = async (event) => {
-              if (event.target?.result) {
-                try {
-                  await addDoc(collection(db, 'photos'), {
-                    url: event.target!.result as string,
-                    createdAt: serverTimestamp()
-                  });
-                  resolve(true);
-                } catch (error) {
-                  reject(error);
-                }
-              }
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          });
-          await uploadPromise;
+          try {
+            const resizedBase64 = await resizeImage(file, 1200, 1200);
+            await addDoc(collection(db, 'photos'), {
+              url: resizedBase64,
+              createdAt: serverTimestamp()
+            });
+          } catch (error) {
+            console.error("Fehler beim Verarbeiten/Hochladen des Bildes:", error);
+          }
         }
       } catch (error) {
         handleFirestoreError(error, OperationType.CREATE, 'photos');

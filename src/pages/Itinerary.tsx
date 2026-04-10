@@ -70,10 +70,10 @@ export default function Itinerary() {
       linkText: "Zum Hotel"
     },
     {
-      time: "19:00",
+      time: "18:30",
       title: "Gemeinsames Abendessen",
       location: "May Hotel Mayschoß",
-      description: "Wir essen gemeinsam im Hotel. Hier gibt es für alle Geschmäcker und Ernährungsweisen passende Optionen (auch vegan/vegetarisch).",
+      description: "Wir essen gemeinsam im Hotel. Es gibt ein Buffet, bei dem für alle Geschmäcker und Ernährungsweisen etwas dabei ist (auch vegan/vegetarisch).",
       icon: Utensils,
       color: "bg-orange-100 text-orange-700",
       image: "https://mayhotel.de/wp-content/uploads/2025/03/IMG_6142-600x450.jpg",
