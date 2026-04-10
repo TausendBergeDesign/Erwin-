@@ -28,13 +28,13 @@ export default function Itinerary() {
     {
       time: "12:30",
       title: "Mittagessen im Michaelishof",
-      location: "Weinhaus Michaelishof, Mayschoß",
+      location: "Weingut Michaelishof, Mayschoß",
       description: "Unser erster Stopp auf der Wanderung. Gemeinsame Stärkung für die kommende Strecke – wir sitzen schön auf der Terrasse.",
       icon: Utensils,
       color: "bg-orange-100 text-orange-700",
       image: "https://mayschoss.de/wp-content/uploads/2025/11/Michaelishof_DAS-WEINHAUS-scaled-1-768x512.jpg",
       link: "/entdecken",
-      linkText: "Mehr zum Weinhaus"
+      linkText: "Mehr zum Weingut"
     },
     {
       time: "14:30",

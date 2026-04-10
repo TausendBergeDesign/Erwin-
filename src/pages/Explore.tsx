@@ -32,12 +32,12 @@ export default function Explore() {
       website: "https://www.weinhaus-klaes.de/"
     },
     {
-      name: "Weinhaus Michaelishof",
+      name: "Weingut Michaelishof",
       location: "Mayschoß",
       desc: "Einzelne vegane Gerichte nach Anmeldung. Nicht vegan spezialisiert, aber tolle Aussicht.",
       vegan: "Nach Anmeldung",
       image: "https://mayschoss.de/wp-content/uploads/2025/11/Michaelishof_DAS-WEINHAUS-scaled-1-768x512.jpg",
-      website: "https://www.michaelishof-mayschoss.de/"
+      website: "https://weingut-michaelishof.com/"
     },
     {
       name: "Neuenahrer Brauhaus",

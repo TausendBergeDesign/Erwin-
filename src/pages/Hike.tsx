@@ -12,42 +12,42 @@ export default function Hike() {
     },
     {
       title: "Mittagessen im Michaelishof",
-      distance: "1,1 KM",
-      desc: "Erster großer Stopp: Wir stärken uns im Weinhaus Michaelishof für die kommende Strecke und sitzen schön auf der Terrasse.",
+      distance: "3,1 KM",
+      desc: "Erster großer Stopp: Wir stärken uns im Weingut Michaelishof für die kommende Strecke und sitzen schön auf der Terrasse.",
       icon: Utensils,
       image: "https://mayschoss.de/wp-content/uploads/2025/11/Michaelishof_DAS-WEINHAUS-scaled-1-768x512.jpg"
     },
     {
       title: "Weg nach Rech (Ahr-Ufer)",
-      distance: "3,5 KM",
+      distance: "3,1 - 5,5 KM",
       desc: "Wir wandern entspannt entlang der Ahr in Richtung des malerischen Nachbarortes Rech.",
       icon: Footprints,
       image: "https://img2.oastatic.com/img2/8094738/max/variant.jpg?revbust=705e5b64"
     },
     {
       title: "Rech: Kaffee, Kuchen & Bahn-Option",
-      distance: "4,8 KM",
+      distance: "5,5 KM",
       desc: "Pause in Rech. Wer möchte, kann von hier aus gemütlich mit der Bahn zurück nach Mayschoß fahren (ca. 3 Min Fahrt).",
       icon: Coffee,
       image: "https://img1.oastatic.com/img2/8094727/max/variant.jpg?revbust=705e5b64"
     },
     {
       title: "Anstieg & Weinautomat",
-      distance: "6,5 KM",
+      distance: "5,5 - 7,5 KM",
       desc: "Für die Wanderlustigen: Der Anstieg von Rech aus zur Saffenburg. Auf dem Weg nach oben wartet der Weinautomat auf uns!",
       icon: TrendingUp,
       image: "https://www.volksfreund.de/imgs/28/1/5/8/8/9/1/9/0/7/tok_9e198318abd47b814bc94c7ba1926291/w1900_h1268_x1496_y998_DPA_bfunk_dpa_5FAC8800D8052FCC-9a6fa92590fba3c2.jpg"
     },
     {
       title: "Saffenburg",
-      distance: "7,2 KM",
+      distance: "7,6 KM",
       desc: "Mit dem frischen Wein aus dem Automaten genießen wir auf der Burgruine das 360°-Panorama über das Ahrtal.",
       icon: Wine,
       image: "https://img0.oastatic.com/img2/50998261/max/variant.webp?revbust=705e5b64"
     },
     {
       title: "Abstieg & Ziel Mayschoß",
-      distance: "8,7 KM",
+      distance: "8,0 - 8,8 KM",
       desc: "Zurück in Mayschoß. Wir beenden die Runde am Bahnhof und machen uns auf zum Hotel.",
       icon: Map,
       image: "https://d2exd72xrrp1s7.cloudfront.net/www/000/1k0/in/inlfyt6h0zk16w1zh5lszlx21wgn794r-uhi516900/0?width=1920&crop=false&q=70"
