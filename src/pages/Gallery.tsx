@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Image as ImageIcon, Upload, X, Maximize2, Trash2, LogIn } from 'lucide-react';
+import { Image as ImageIcon, Upload, X, Maximize2, Trash2, LogIn, Download, CheckCircle2, Circle, Check, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   collection, 
@@ -113,6 +113,9 @@ export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDownloading, setIsDownloading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -159,9 +162,100 @@ export default function Gallery() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    // Deletion is currently disabled for public safety
-    console.log("Deletion is disabled in public mode", id);
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleDownloadSingle = async (url: string, id: string) => {
+    // Try Web Share API first for mobile devices (allows "Save to Photos")
+    if (navigator.share && navigator.canShare) {
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const file = new File([blob], `erinnerung_${id.slice(0, 5)}.jpg`, { type: 'image/jpeg' });
+        
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'Foto speichern',
+          });
+          return;
+        }
+      } catch (error) {
+        console.error("Sharing failed, falling back to direct download:", error);
+      }
+    }
+
+    // Fallback to traditional download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `erinnerung_${id.slice(0, 5)}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadSelected = async () => {
+    if (selectedIds.size === 0) return;
+    
+    setIsDownloading(true);
+    try {
+      const selectedImages = images.filter(img => selectedIds.has(img.id));
+      
+      // Try Web Share API for multiple files (best for mobile "Save X Images")
+      if (navigator.share && navigator.canShare) {
+        const files: File[] = [];
+        for (const photo of selectedImages) {
+          const response = await fetch(photo.url);
+          const blob = await response.blob();
+          files.push(new File([blob], `erinnerung_${photo.id.slice(0, 5)}.jpg`, { type: 'image/jpeg' }));
+        }
+
+        if (navigator.canShare({ files })) {
+          await navigator.share({
+            files,
+            title: 'Erinnerungen speichern',
+          });
+          setIsSelecting(false);
+          setSelectedIds(new Set());
+          return;
+        }
+      }
+
+      // Fallback for devices without share capability: Trigger sequential downloads
+      // Note: Browsers usually block this or ask for permission
+      for (const photo of selectedImages) {
+        const link = document.createElement('a');
+        link.href = photo.url;
+        link.download = `erinnerung_${photo.id.slice(0, 5)}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // Small delay to help browser handle multiple clicks
+        await new Promise(r => setTimeout(r, 100));
+      }
+    } catch (error) {
+      console.error("Download/Share failed:", error);
+    } finally {
+      setIsDownloading(false);
+      setIsSelecting(false);
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelectionMode = () => {
+    setIsSelecting(!isSelecting);
+    if (isSelecting) {
+      setSelectedIds(new Set());
+    }
   };
 
   if (loading) {
@@ -174,34 +268,73 @@ export default function Gallery() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <h1 className="text-4xl font-serif text-stone-800 mb-3">Galerie</h1>
           <p className="text-stone-500">Erinnerungen an unseren Familienausflug.</p>
         </div>
-        <div className="flex flex-col items-start md:items-end gap-2">
-          <div className="flex gap-3 w-full md:w-auto">
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleUpload} 
-              multiple 
-              accept="image/*" 
-              className="hidden" 
-            />
+        
+        <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={toggleSelectionMode}
+            className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-medium transition-all shadow-sm ${
+              isSelecting 
+                ? 'bg-stone-200 text-stone-800 hover:bg-stone-300' 
+                : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
+            }`}
+          >
+            {isSelecting ? (
+              <>
+                <X className="w-4 h-4" />
+                Ausbrechen
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="w-4 h-4" />
+                Bilder auswählen
+              </>
+            )}
+          </button>
+
+          {isSelecting && selectedIds.size > 0 && (
             <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm w-full md:w-auto ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              onClick={handleDownloadSelected}
+              disabled={isDownloading}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-full font-medium hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50"
             >
-              {isUploading ? (
+              {isDownloading ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <Upload className="w-4 h-4" />
+                <Download className="w-4 h-4" />
               )}
-              {isUploading ? 'Wird hochgeladen...' : 'Fotos hochladen'}
+              {selectedIds.size} {selectedIds.size === 1 ? 'Bild' : 'Bilder'} sichern
             </button>
-          </div>
+          )}
+
+          {!isSelecting && (
+            <>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleUpload} 
+                multiple 
+                accept="image/*" 
+                className="hidden" 
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-colors shadow-sm ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {isUploading ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                {isUploading ? 'Wird hochgeladen...' : 'Fotos hochladen'}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -219,25 +352,57 @@ export default function Gallery() {
               layout
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="break-inside-avoid rounded-2xl overflow-hidden shadow-sm group relative bg-stone-100"
+              className={`break-inside-avoid rounded-2xl overflow-hidden shadow-sm group relative bg-stone-100 cursor-pointer transition-all ${
+                isSelecting && selectedIds.has(photo.id) ? 'ring-4 ring-emerald-500 sm:scale-[0.98]' : ''
+              }`}
+              onClick={() => isSelecting ? toggleSelection(photo.id) : setSelectedImage(photo.url)}
             >
               <img 
                 src={photo.url} 
                 alt="Erinnerung" 
-                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+                className={`w-full h-auto object-cover transition-transform duration-500 ${!isSelecting ? 'group-hover:scale-105' : ''}`}
                 referrerPolicy="no-referrer"
                 loading="lazy"
-                onClick={() => setSelectedImage(photo.url)}
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-                <button 
-                  onClick={() => setSelectedImage(photo.url)}
-                  className="p-2 bg-white/90 rounded-full text-stone-800 hover:bg-white transition-colors"
-                  title="Vergrößern"
-                >
-                  <Maximize2 className="w-5 h-5" />
-                </button>
-              </div>
+              
+              {isSelecting && (
+                <div className="absolute top-3 right-3 z-10">
+                  {selectedIds.has(photo.id) ? (
+                    <div className="bg-emerald-500 text-white p-1 rounded-full shadow-lg">
+                      <Check className="w-5 h-5" />
+                    </div>
+                  ) : (
+                    <div className="bg-white/50 backdrop-blur-sm border-2 border-white/80 p-1 rounded-full shadow-lg">
+                      <div className="w-5 h-5" />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {!isSelecting && (
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedImage(photo.url);
+                    }}
+                    className="p-3 bg-white/90 rounded-full text-stone-800 hover:bg-white transition-all hover:scale-110 shadow-lg"
+                    title="Vergrößern"
+                  >
+                    <Maximize2 className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadSingle(photo.url, photo.id);
+                    }}
+                    className="p-3 bg-white/90 rounded-full text-stone-800 hover:bg-white transition-all hover:scale-110 shadow-lg"
+                    title="Herunterladen"
+                  >
+                    <Download className="w-6 h-6" />
+                  </button>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
@@ -250,22 +415,35 @@ export default function Gallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm"
             onClick={() => setSelectedImage(null)}
           >
-            <button 
-              className="absolute top-6 right-6 p-2 text-white/70 hover:text-white transition-colors"
-              onClick={() => setSelectedImage(null)}
-            >
-              <X className="w-8 h-8" />
-            </button>
+            <div className="absolute top-6 right-6 flex items-center gap-4">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDownloadSingle(selectedImage, 'full');
+                }}
+                className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                title="Herunterladen"
+              >
+                <Download className="w-8 h-8" />
+              </button>
+              <button 
+                className="p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                onClick={() => setSelectedImage(null)}
+              >
+                <X className="w-8 h-8" />
+              </button>
+            </div>
+            
             <motion.img 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               src={selectedImage} 
               alt="Vergrößerte Ansicht" 
-              className="max-w-full max-h-full rounded-lg shadow-2xl"
+              className="max-w-full max-h-full rounded-lg shadow-2xl ring-1 ring-white/20"
               onClick={(e) => e.stopPropagation()}
             />
           </motion.div>
